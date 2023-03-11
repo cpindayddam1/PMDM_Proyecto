@@ -31,4 +31,12 @@
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
+
+    <!-- Permiso para el uso del GPS -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+
+    <!-- Permiso para conectarnos a Internet -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    
 </manifest>

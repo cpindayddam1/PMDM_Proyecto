@@ -48,16 +48,7 @@ class CustomInputField extends StatelessWidget {
         if (value == null) return 'Este campo es requerido';
           return value.length < numCaracteresMinimo ? 'Mínimo de ' + numCaracteresMinimo.toString() + ' letras' : null;
       };
-    } 
-    // else {
-    //   f = (value) {
-    //     if (value.length < numCaracteresMinimo) {
-    //       return 'Minimo de ' + numCaracteresMinimo.toString() + 'caracteres';
-    //     } else {
-    //       return null;
-    //     }
-    //   };
-    // }
+    }
 
     return TextFormField(
         autofocus: false,

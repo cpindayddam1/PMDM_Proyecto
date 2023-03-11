@@ -37,6 +37,22 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
 
+  # Para acceso a BBDD
+  path_provider: ^2.0.12
+  sqflite: ^2.2.4+1
+
+
+  # Para notificaciones
+  # Dependiendo de la versión del SDK de android que se utilice se podrá utilizar una versión u otra
+  flutter_local_notifications: ^13.0.0
+  # flutter_local_notifications: ^5.1.3+2
+
+  # Para la ubicacion GPS
+  location: ^4.4.0
+
+  # Para peticiones HTTP
+  http: ^0.13.5
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

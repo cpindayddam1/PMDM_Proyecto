@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:proyecto/widgets/custom_input_field.dart';
 
-class FormularioScreen extends StatefulWidget {
-  const FormularioScreen({super.key});
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
   
   @override
   State<StatefulWidget> createState() {
-    return FormularioStateScreen();
+    return SignUpScreenState();
   }
 
 }
 
-class FormularioStateScreen extends State<StatefulWidget> {
+class SignUpScreenState extends State<StatefulWidget> {
   
   @override
   Widget build(BuildContext context) {
@@ -145,7 +145,36 @@ class FormularioStateScreen extends State<StatefulWidget> {
                   numCaracteresMinimo: 0,
                   obligatorio: false,
                 ),
-                // const SizedBox(height: 30),
+                const SizedBox(height: 30),
+                ElevatedButton(
+                  child: const SizedBox(
+                    width: double.infinity,
+                    child: Center(child: Text('Guardar'),),
+                  ),
+                  onPressed: () {
+                    if (!formKey.currentState!.validate()) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Error en la creacon del usuario')));
+                    }
+                  }
+                ),
+                const SizedBox(height: 30),
+                ElevatedButton(
+                      onPressed: () {
+                        // Navegamos a otra pantalla
+                        // Poner una pantalla encima (ofrece volver a la pantalla anterior en el AppBar)
+                        // Navigator.pushNamed(context, 'notificaciones');
+
+                        // pushReplacement destruye el stack de pantallas anterior (no puedes volver)
+                        Navigator.pushReplacementNamed(
+                            context, 'home');
+                      },
+                      child: const SizedBox(
+                          width: double.infinity,
+                          child:
+                              Center(child: Text('Pantalla API AEMET'))))
+
+
               ],
             ),
           ),

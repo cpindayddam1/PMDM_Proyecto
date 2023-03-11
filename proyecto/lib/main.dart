@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:proyecto/screens/1_formulario_screen.dart';
+import 'package:proyecto/screens/2_singup_screen.dart';
+import 'package:proyecto/screens/3_home_screen.dart';
 
 void main(List<String> args) {
   runApp(const Iniza());
@@ -10,9 +11,15 @@ class Iniza extends StatelessWidget{
   
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: FormularioScreen(),
+      // home: FormularioScreen(),
+      initialRoute: 'singup',
+      routes: {
+        // 'login' : (context) => const 
+        'singup' : (context) => const SignUpScreen(),
+        'home' : (context) => const HomeScreen(),
+      },
     );
   }
 }
