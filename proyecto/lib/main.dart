@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:proyecto/models/notification_provider.dart';
 import 'package:proyecto/screens/2_singup_screen.dart';
 import 'package:proyecto/screens/3_home_screen.dart';
 
-void main(List<String> args) {
+void main(List<String> args) async {
+  // Utilizado para las notificaciones, comprueba que esté todo inicializado
+  WidgetsFlutterBinding.ensureInitialized();
+  // Inicializamos las configuraciones iniciales de las notificaciones
+  await NotificationProvider.notificationProvider.setup();
+
   runApp(const Iniza());
 }
 
@@ -11,15 +17,15 @@ class Iniza extends StatelessWidget{
   
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      // home: FormularioScreen(),
-      initialRoute: 'singup',
-      routes: {
-        // 'login' : (context) => const 
-        'singup' : (context) => const SignUpScreen(),
-        'home' : (context) => const HomeScreen(),
-      },
+      home: SignUpScreen(),
+      // initialRoute: 'singup',
+      // routes: {
+      //   // 'login' : (context) => const 
+      //   'singup' : (context) => const SignUpScreen(),
+      //   'home' : (context) => const HomeScreen(),
+      // },
     );
   }
 }

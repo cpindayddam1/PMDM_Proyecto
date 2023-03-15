@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:proyecto/models/user_model.dart';
+import 'package:proyecto/screens/3_home_screen.dart';
 import 'package:proyecto/widgets/custom_input_field.dart';
 
 class SignUpScreen extends StatefulWidget {
@@ -29,6 +31,10 @@ class SignUpScreenState extends State<StatefulWidget> {
       'farmacos': '',
       'habitos': '',
       // 'embarazo': '',
+    };
+
+    final Map<String, String> horaMap = {
+      'hora': ''
     };
     
     return Scaffold(
@@ -145,7 +151,17 @@ class SignUpScreenState extends State<StatefulWidget> {
                   numCaracteresMinimo: 0,
                   obligatorio: false,
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(height: 50),
+                CustomInputField(
+                  labelText: 'Hora de notiFicacion',
+                  hintText: 'Hora de notiFicacion',
+                  formProperty: 'hora',
+                  formValues: horaMap,
+                  numCaracteresMinimo: 1,
+                  obligatorio: true,
+                ),
+
+
                 ElevatedButton(
                   child: const SizedBox(
                     width: double.infinity,
@@ -154,8 +170,25 @@ class SignUpScreenState extends State<StatefulWidget> {
                   onPressed: () {
                     if (!formKey.currentState!.validate()) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Error en la creacon del usuario')));
+                      const SnackBar(content: Text('Error en la creacion del usuario')));
                     }
+                    //pasar la persona a la HomeScreen
+                    UserModel user = UserModel(
+                      nombre: datosForm['nombre']!,
+                      apellidos: datosForm['apellidos']!,
+                      email: datosForm['email']!, 
+                      contrasena: datosForm['contrasena']!, 
+                      edad: int.parse(datosForm['edad']!), 
+                      peso: double.parse(datosForm['peso']!), 
+                      nivelActividad: datosForm['nivelActividad']!);
+
+                    int hora = int.parse(horaMap['hora']!);
+
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => HomeScreen(userModel: user, hora: hora)
+                    ));
                   }
                 ),
                 const SizedBox(height: 30),
@@ -166,8 +199,13 @@ class SignUpScreenState extends State<StatefulWidget> {
                         // Navigator.pushNamed(context, 'notificaciones');
 
                         // pushReplacement destruye el stack de pantallas anterior (no puedes volver)
-                        Navigator.pushReplacementNamed(
-                            context, 'home');
+                        // Navigator.pushReplacementNamed(
+                        //     context, 'home');
+                        Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => HomeScreen(userModel: UserModel(nombre: 'nombre', apellidos: 'apellidos', email: 'email', contrasena: 'contrasena', edad: 12, peso: 12, nivelActividad: 'nivelActividad'), hora: 0)
+                    ));
                       },
                       child: const SizedBox(
                           width: double.infinity,

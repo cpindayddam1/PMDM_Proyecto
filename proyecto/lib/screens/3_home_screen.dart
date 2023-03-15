@@ -5,24 +5,29 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:location/location.dart';
-import 'package:proyecto/models/aemet_rest.dart';
 import 'package:proyecto/models/codigos_municipios.dart';
+import 'package:proyecto/models/user_model.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
-
+  final UserModel userModel;
+  final int hora;
+// SecondScreen({Key key, @required this.text}) : ;
+  const HomeScreen({Key? key, required this.userModel, required this.hora}) : super(key: key);
+  
+  // String nvl;
 
   @override
   State<StatefulWidget> createState() {
-    return HomeScreenState();
+    return HomeScreenState(userModel: userModel, hora: hora);
   }
 
 }
 
-
 class HomeScreenState extends State<HomeScreen> {
-  // HomeScreenState();
+  UserModel userModel;
+  final int hora;
 
+  HomeScreenState({required this.userModel, required this.hora});
 
   Container containerResultado = Container(
     child: Text('Da clic en el boton para obtener datos'),
@@ -45,7 +50,7 @@ class HomeScreenState extends State<HomeScreen> {
     'extremo': ['PARAR la actividad al sentir calambres, mareos, fatiga, nauseas.', 'Retirarse a un lugar fresco y comunicar la situación a un compañero o superior.', 'Si los síntomas persisten avisar al 112.']
   };
 
-  String x = CodigosMunicipios.codigos['municipios'][10]['CMUN'];
+  // String x = userModel.apellidos;
 
   @override
   Widget build(BuildContext context) {
@@ -80,21 +85,21 @@ class HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               const SizedBox(height: 30),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pushReplacementNamed(context, 'singup');
-                },
-                child: const SizedBox(
-                  height: 50,
-                  width: 200,
-                  child: Center(
-                    child: Text('Volver al formulario', textAlign: TextAlign.center)),
-                ),
-              ),
+              // ElevatedButton(
+              //   onPressed: () {
+              //     Navigator.pushReplacementNamed(context, 'singup');
+              //   },
+              //   child: const SizedBox(
+              //     height: 50,
+              //     width: 200,
+              //     child: Center(
+              //       child: Text('Volver al formulario', textAlign: TextAlign.center)),
+              //   ),
+              // ),
               const SizedBox(height: 30),
               containerResultado,
               Image(image: AssetImage('assets/ispln.png')),
-              Text(x)
+              Text('nombre: '+ userModel.nivelActividad + ' - hora: ' + hora.toString())
               ],
           ),
         ),
@@ -107,19 +112,18 @@ class HomeScreenState extends State<HomeScreen> {
     int hora = 12;
     String nvlAct = 'pesado';
     bool esVulnerable = true;
-
+    // int codMun = 31001;
     String msjGPS = await obtenerUbicacionGPS();
     
-    // if (msjGPS == 'El GPS está desactivado' || msjGPS == 'No se ha dado permiso para utilizar el GPS' ) {
+    // if (msjGPS == 'El GPS está desactivado' || msjGPS ==   'No se ha dado permiso para utilizar el GPS' ) {
     //   return 'error gps';
     // }
     double lat = double.parse(msjGPS.split('*')[0]);
     double lon = double.parse(msjGPS.split('*')[1]);
-
     int codMun = obtenerCodigoMunicipio(lat, lon);
-    // 27025
-    final res = await obtenerDatosAemet(hora, nvlAct, esVulnerable, codMun);
+    
 
+    final res = await obtenerDatosAemet(hora, nvlAct, esVulnerable, codMun);
     if (res.runtimeType.toString() == 'IdentityMap<String, dynamic>') {
       String riesgo = res['nvlRiesgo'];
           Color color = res['colorRiesgo'];
@@ -250,12 +254,8 @@ class HomeScreenState extends State<HomeScreen> {
       if (distancia < distanciaMenor) {
         distanciaMenor = distancia;
         codMenor = cod;
-        // nombre = obj['NOMBRE'];
       }
-      // print(lat2.toString() + ' * ' + lon2.toString());
     }
-    // print(nombre);
-    // print(lat.toString() + ' *** ' + lon.toString());
     return codMenor;
   }
 
@@ -298,14 +298,12 @@ class HomeScreenState extends State<HomeScreen> {
     String apiKey = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjcGluZGF5ZGVsQGVkdWNhY2lvbi5uYXZhcnJhLmVzIiwianRpIjoiZDMzNzQ4YWYtMzBiMC00ZWU5LWFmOGQtMjgzNDM2YjhkMWIxIiwiaXNzIjoiQUVNRVQiLCJpYXQiOjE2Nzg0MDg0MTAsInVzZXJJZCI6ImQzMzc0OGFmLTMwYjAtNGVlOS1hZjhkLTI4MzQzNmI4ZDFiMSIsInJvbGUiOiIifQ.hZu4JaDTzSz854rZZR2D2pjZNgqJy0EpPkehi0cJQ8M';
     String urlStr = 'https://opendata.aemet.es/opendata/api/prediccion/especifica/municipio/horaria/' + codMun.toString();
     urlStr += '/?api_key=' + apiKey;
-    //https://opendata.aemet.es/opendata/api/prediccion/especifica/municipio/horaria/27025/?api_key=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjcGluZGF5ZGVsQGVkdWNhY2lvbi5uYXZhcnJhLmVzIiwianRpIjoiZDMzNzQ4YWYtMzBiMC00ZWU5LWFmOGQtMjgzNDM2YjhkMWIxIiwiaXNzIjoiQUVNRVQiLCJpYXQiOjE2Nzg0MDg0MTAsInVzZXJJZCI6ImQzMzc0OGFmLTMwYjAtNGVlOS1hZjhkLTI4MzQzNmI4ZDFiMSIsInJvbGUiOiIifQ.hZu4JaDTzSz854rZZR2D2pjZNgqJy0EpPkehi0cJQ8M
-    final response = await http.get(Uri.parse(urlStr));
 
+    final response = await http.get(Uri.parse(urlStr));
     if (response.statusCode == 200) {
       // Si la llamada al servidor fue exitosa, analiza el JSON
       final jsonData = json.decode(response.body);
       String urlAemet = jsonData['datos'];
-
       return urlAemet;
     } else {
       // Si la llamada no fue exitosa, lanza un error.
@@ -331,14 +329,17 @@ class HomeScreenState extends State<HomeScreen> {
         int ta = 0;
         int hr = 0;
 
-        if (hora >= 0 && hora <= 7) {
-          //tomara valor de 23 // de la hora 9 => temperaturas[9 - 8]
-          ta = int.parse(temperaturas[15]['value']);
-          hr = int.parse(humedades[15]['value']);
-        } else {
-          ta = int.parse(temperaturas[hora - 8]['value']);
-          hr = int.parse(humedades[hora - 8]['value']);
-        }
+        // if (hora >= 0 && hora <= 7) {
+        //   // tomara valor de 23 // de la hora 9 => temperaturas[9 - 8]
+        //   ta = int.parse(temperaturas[15]['value']);
+        //   hr = int.parse(humedades[15]['value']);
+        // } else {
+        //   ta = int.parse(temperaturas[hora - 8]['value']);
+        //   hr = int.parse(humedades[hora - 8]['value']);
+        // }
+
+        ta = int.parse(temperaturas[0]['value']);
+        hr = int.parse(humedades[0]['value']);
 
         //e = HR / 100 × 6,105 × exp (17,27 × Ta/(237,7 + Ta))
         double ep = (hr / 100) * 6.105 * exp((17.27 * ta) / (237.7 + ta));
@@ -387,11 +388,12 @@ class HomeScreenState extends State<HomeScreen> {
       else {
       // Si la llamada no fue exitosa, lanza un error.
       // throw Exception('Failed to load post');
-        return 'Error en la obtencion de datos';
+        return 'Error en la obtencion de datos';  
       }
     }
     catch (e) {
-      return 'Algo salió mal. Inténtalo más tarde';
+      print(e);
+      return e.toString();
     }     
       
   }
