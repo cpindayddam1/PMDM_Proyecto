@@ -28,7 +28,7 @@ class SignUpScreenState extends State<StatefulWidget> {
     String msjGPS = await GpsProvider.obtenerUbicacionGPS();
 
     if (msjGPS == 'El GPS está desactivado' ||  msjGPS == 'No se ha dado permiso para utilizar el GPS' || msjGPS == 'Error al obtener ubicacion') {
-      body = 'error gps';
+      return;
     }
     
     double lat = double.parse(msjGPS.split('*')[0]);
@@ -36,21 +36,17 @@ class SignUpScreenState extends State<StatefulWidget> {
     int codMun = GpsProvider.obtenerCodigoMunicipio(lat, lon);
 
     final res = await AemetDatos.obtenerDatosAemet(hora, nvlAct, esVulnerable, codMun);
-    if (res.runtimeType.toString() == 'IdentityMap<String, dynamic>') {
-      String riesgo = res['nvlRiesgo'];    
+    print(res.toString());
+    if (res.runtimeType.toString() == 'String') {
+      return;
+    }
+    else {  
+      String riesgo = res['nvlRiesgo'];
       List<String> recs = res['recomendaciones'];/////
-      String str = '';
-      recs.forEach((r) => str += r + '\n');
-      body = riesgo  + '\n' + str;
+      body += 'Riesgo: ' + riesgo  + '\n-------------\n';
+      NotificationProvider.notificationProvider.mostrarNotificacionDiaria('INIZA', body, hora);
+      // NotificationProvider.notificationProvider.mostrarNotificacion('iniza', body);
     }
-    else {
-        body = res;
-    }
-
-    NotificationProvider.notificationProvider.mostrarNotificacionACiertaHora(hora, 0, 'INIZA', body);
-
-    //notificacion de confirmacion
-    NotificationProvider.notificationProvider.mostrarNotificacion('INIZA', 'Has configurado las notificaciones diarias a las ' + hora.toString() + 'horas');
   }
 
 
@@ -280,8 +276,9 @@ class SignUpScreenState extends State<StatefulWidget> {
                     int hora = int.parse(horaMap['hora']!);
 
                     //lanzamos notificacion DIARIA
-                    // lanzarNotificacionDiaria(hora, user);
                     NotificationProvider.notificationProvider.mostrarNotificacion('INIZA', 'Has configurado las notificaciones diarias a las ' + hora.toString() + 'horas');
+                    lanzarNotificacionDiaria(hora, user);
+
                     Navigator.push(
                       context,
                       MaterialPageRoute(
