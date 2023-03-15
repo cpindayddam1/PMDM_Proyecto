@@ -63,8 +63,7 @@ class HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-              containerResultado,
-              Text('nombre: '+ userModel.nivelActividad + ' - hora: ' + hora.toString())
+              containerResultado
               ],
           ),
         ),
@@ -129,7 +128,7 @@ class HomeScreenState extends State<HomeScreen> {
 
           String str = '';
           recs.forEach((r) => str += r + '\n\n\n');
-
+          str += msjVul;
           Container container = 
           Container(
             padding: EdgeInsets.all(30),
@@ -218,7 +217,7 @@ class HomeScreenState extends State<HomeScreen> {
                       children: [
                         Container(child: Text('Error', style: TextStyle(fontSize: 18, color: Colors.red, fontWeight: FontWeight.bold))),
                         const SizedBox(height: 30),
-                        Container(child: Text(res, style: TextStyle(fontSize: 15, color: Colors.amber))),
+                        Container(child: Text(res.toString(), style: TextStyle(fontSize: 15, color: Colors.amber))),
                       ]
                     ),
                   )

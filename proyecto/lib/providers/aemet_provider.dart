@@ -99,7 +99,7 @@ class AemetDatos {
         //trabajar con las recomendaciones
         List<String>? recs = recomPorRiesgo[riesgo];
 
-        String msjVulnerable = '';
+        String msjVulnerable = 'No eres parte de la población vulnerable.';
         if (esVulnerable) {
           msjVulnerable = 'Eres parte de la población vulnerable, toma precausiones.';
         }

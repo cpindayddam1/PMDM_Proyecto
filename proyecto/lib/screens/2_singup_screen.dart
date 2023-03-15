@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:proyecto/models/user_model.dart';
+import 'package:proyecto/providers/aemet_provider.dart';
+import 'package:proyecto/providers/gps_provider.dart';
 import 'package:proyecto/providers/notification_provider.dart';
 import 'package:proyecto/screens/3_home_screen.dart';
 import 'package:proyecto/widgets/custom_input_field.dart';
@@ -16,11 +18,36 @@ class SignUpScreen extends StatefulWidget {
 
 class SignUpScreenState extends State<StatefulWidget> {
   
-  Future<void> lanzarNotificacionDiaria(int hora) async {
+  Future<void> lanzarNotificacionDiaria(int hora, UserModel userModel) async {
+    String body = '';
     
+    int h = hora;
+    String nvlAct = userModel.nivelActividad;
+    bool esVulnerable = userModel.esVulnerable();
+    
+    String msjGPS = await GpsProvider.obtenerUbicacionGPS();
 
-    // String bi
-    // NotificationProvider.notificationProvider.mostrarNotificacionACiertaHora(hour, minute, 'INIZA', body);
+    if (msjGPS == 'El GPS está desactivado' ||  msjGPS == 'No se ha dado permiso para utilizar el GPS' || msjGPS == 'Error al obtener ubicacion') {
+      body = 'error gps';
+    }
+    
+    double lat = double.parse(msjGPS.split('*')[0]);
+    double lon = double.parse(msjGPS.split('*')[1]);
+    int codMun = GpsProvider.obtenerCodigoMunicipio(lat, lon);
+
+    final res = await AemetDatos.obtenerDatosAemet(hora, nvlAct, esVulnerable, codMun);
+    if (res.runtimeType.toString() == 'IdentityMap<String, dynamic>') {
+      String riesgo = res['nvlRiesgo'];    
+      List<String> recs = res['recomendaciones'];/////
+      String str = '';
+      recs.forEach((r) => str += r + '\n');
+      body = riesgo  + '\n' + str;
+    }
+    else {
+        body = res;
+    }
+
+    NotificationProvider.notificationProvider.mostrarNotificacionACiertaHora(hora, 0, 'INIZA', body);
 
     //notificacion de confirmacion
     NotificationProvider.notificationProvider.mostrarNotificacion('INIZA', 'Has configurado las notificaciones diarias a las ' + hora.toString() + 'horas');
@@ -252,8 +279,8 @@ class SignUpScreenState extends State<StatefulWidget> {
                     int hora = int.parse(horaMap['hora']!);
 
                     //lanzamos notificacion DIARIA
-                    lanzarNotificacionDiaria(hora);
-
+                    // lanzarNotificacionDiaria(hora, user);
+                    NotificationProvider.notificationProvider.mostrarNotificacion('INIZA', 'Has configurado las notificaciones diarias a las ' + hora.toString() + 'horas');
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -262,18 +289,6 @@ class SignUpScreenState extends State<StatefulWidget> {
                   }
                 ),
                 const SizedBox(height: 30),
-                ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => HomeScreen(userModel: UserModel(nombre: 'nombre', apellidos: 'apellidos', email: 'email', contrasena: 'contrasena', edad: 12, peso: 12, nivelActividad: 'pesado'), hora: 0)
-                        ));
-                      },
-                      child: const SizedBox(
-                          width: double.infinity,
-                          child:
-                              Center(child: Text('Pantalla API AEMET'))))
               ],
             ),
           ),

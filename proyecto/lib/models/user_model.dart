@@ -74,7 +74,7 @@ class UserModel {
   }
 
   bool esVulnerable() {
-    if (edad > 65 || peso > 90 || patologia != '' || farmacos != '') {
+    if (edad > 65 || peso > 90) {
       return true;
     }
     return false;
