@@ -50,14 +50,14 @@ class HomeScreenState extends State<HomeScreen> {
                 color: Colors.blueGrey,
                 child: Text('INIZA Home', style: TextStyle(fontSize: 20, color: Colors.amber)),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 10),
               ElevatedButton(
                 onPressed: () {
                   obtenerWidgetResultado();
                 },
                 child: const SizedBox(
                   height: 50,
-                  width: 350,
+                  width: 335,
                   child: Center(
                     child: Text('Obtener nivel de riesgo y recomendaciones actuales', textAlign: TextAlign.center)),
                 ),
@@ -119,7 +119,38 @@ class HomeScreenState extends State<HomeScreen> {
     int codMun = GpsProvider.obtenerCodigoMunicipio(lat, lon);
 
     final res = await AemetDatos.obtenerDatosAemet(hora, nvlAct, esVulnerable, codMun);
-    if (res.runtimeType.toString() == 'IdentityMap<String, dynamic>') {
+    if (res.runtimeType.toString() == 'String') {
+      Container container = 
+          Container(
+            padding: EdgeInsets.all(30),
+            child: Container(
+              color: Colors.red,
+              padding: EdgeInsets.all(20),
+              child: Column(
+                children: [
+                  const SizedBox(height: 30),
+                  Container(
+                    padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
+                    // height: 60,
+                    alignment: Alignment.center,
+                    color: Colors.white,
+                    child: Column(
+                      children: [
+                        Container(child: Text('Error', style: TextStyle(fontSize: 18, color: Colors.red, fontWeight: FontWeight.bold))),
+                        const SizedBox(height: 30),
+                        Container(child: Text(res.toString(), style: TextStyle(fontSize: 15, color: Colors.amber))),
+                      ]
+                    ),
+                  )
+                ]
+              ),
+            ),
+          );
+
+      containerResultado = container;
+      setState(() {});
+    } 
+    else {
       String riesgo = res['nvlRiesgo'];
           Color color = res['colorRiesgo'];
           String temperatura = res['temperatura'];
@@ -131,7 +162,7 @@ class HomeScreenState extends State<HomeScreen> {
           str += msjVul;
           Container container = 
           Container(
-            padding: EdgeInsets.all(30),
+            padding: EdgeInsets.all(10),
             child: Container(
               color: Color.fromARGB(255, 188, 219, 245),
               padding: EdgeInsets.all(20),
@@ -197,37 +228,6 @@ class HomeScreenState extends State<HomeScreen> {
 
           containerResultado = container;
           setState(() {});
-    }
-    else {
-          Container container = 
-          Container(
-            padding: EdgeInsets.all(30),
-            child: Container(
-              color: Colors.red,
-              padding: EdgeInsets.all(20),
-              child: Column(
-                children: [
-                  const SizedBox(height: 30),
-                  Container(
-                    padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
-                    // height: 60,
-                    alignment: Alignment.center,
-                    color: Colors.white,
-                    child: Column(
-                      children: [
-                        Container(child: Text('Error', style: TextStyle(fontSize: 18, color: Colors.red, fontWeight: FontWeight.bold))),
-                        const SizedBox(height: 30),
-                        Container(child: Text(res.toString(), style: TextStyle(fontSize: 15, color: Colors.amber))),
-                      ]
-                    ),
-                  )
-                ]
-              ),
-            ),
-          );
-
-      containerResultado = container;
-      setState(() {});
     }
   }
   

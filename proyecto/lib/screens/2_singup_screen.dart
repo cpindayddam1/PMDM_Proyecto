@@ -264,6 +264,7 @@ class SignUpScreenState extends State<StatefulWidget> {
                     if (!formKey.currentState!.validate()) {
                       ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('Error en la creacion del usuario')));
+                      return;
                     }
                     //pasar la persona a la HomeScreen
                     UserModel user = UserModel(
