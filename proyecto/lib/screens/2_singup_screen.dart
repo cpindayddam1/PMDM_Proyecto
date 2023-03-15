@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:proyecto/models/user_model.dart';
+import 'package:proyecto/providers/notification_provider.dart';
 import 'package:proyecto/screens/3_home_screen.dart';
 import 'package:proyecto/widgets/custom_input_field.dart';
 
@@ -15,6 +16,17 @@ class SignUpScreen extends StatefulWidget {
 
 class SignUpScreenState extends State<StatefulWidget> {
   
+  Future<void> lanzarNotificacionDiaria(int hora) async {
+    
+
+    // String bi
+    // NotificationProvider.notificationProvider.mostrarNotificacionACiertaHora(hour, minute, 'INIZA', body);
+
+    //notificacion de confirmacion
+    NotificationProvider.notificationProvider.mostrarNotificacion('INIZA', 'Has configurado las notificaciones diarias a las ' + hora.toString() + 'horas');
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -36,18 +48,33 @@ class SignUpScreenState extends State<StatefulWidget> {
     final Map<String, String> horaMap = {
       'hora': ''
     };
+
+    TextEditingController horaController = TextEditingController();
     
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Registro INIZA'),
+        title: Image.asset(
+          'assets/ispln.png',
+          height: 45,
+        ),
+        centerTitle: true,
+        backgroundColor: Color.fromARGB(255, 166, 136, 173),
+        toolbarHeight: 70,
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
           child: Form(
             key: formKey,
             child: Column(
               children: [
+                Container(
+                alignment: Alignment.center,
+                height: 100,
+                color: Colors.blueGrey,
+                child: Text('INIZA Registro', style: TextStyle(fontSize: 20, color: Colors.amber)),
+              ),
+              const SizedBox(height: 30),
                 CustomInputField(
                   labelText: 'Nombre',
                   hintText: 'Nombre del usuario',
@@ -55,6 +82,8 @@ class SignUpScreenState extends State<StatefulWidget> {
                   formValues: datosForm,
                   numCaracteresMinimo: 4,
                   obligatorio: true,
+                  esParaPesoEdad: false,
+                  esParaHora: false,
                 ),
                 const SizedBox(height: 30),
                 CustomInputField(
@@ -64,6 +93,8 @@ class SignUpScreenState extends State<StatefulWidget> {
                   formValues: datosForm,
                   numCaracteresMinimo: 4,
                   obligatorio: true,
+                  esParaPesoEdad: false,
+                  esParaHora: false,
                 ),
                 const SizedBox(height: 30),
                 CustomInputField(
@@ -74,6 +105,8 @@ class SignUpScreenState extends State<StatefulWidget> {
                   formValues: datosForm,
                   numCaracteresMinimo: 4,
                   obligatorio: true,
+                  esParaPesoEdad: false,
+                  esParaHora: false,
                 ),
                 const SizedBox(height: 30),
                 CustomInputField(
@@ -84,6 +117,8 @@ class SignUpScreenState extends State<StatefulWidget> {
                   obscureText: true,
                   numCaracteresMinimo: 8,
                   obligatorio: true,
+                  esParaPesoEdad: false,
+                  esParaHora: false,
                 ),
                 const SizedBox(height: 30),
                 CustomInputField(
@@ -94,8 +129,10 @@ class SignUpScreenState extends State<StatefulWidget> {
                   keyboardType: TextInputType.number,
                   numCaracteresMinimo: 1,
                   obligatorio: true,
+                  esParaPesoEdad: true,
+                  esParaHora: false,
                 ),
-                const SizedBox(height: 30),
+                // const SizedBox(height: 30),
                 CustomInputField(
                   labelText: 'Peso',
                   hintText: 'Peso del usuario',
@@ -104,15 +141,20 @@ class SignUpScreenState extends State<StatefulWidget> {
                   keyboardType: TextInputType.number,
                   numCaracteresMinimo: 2,
                   obligatorio: true,
+                  esParaPesoEdad: true,
+                  esParaHora: false,
                 ),
                 const SizedBox(height: 30),
-                const SizedBox(
-                  height: 30,
-                  child: Text('Nivel de actividad'),
+                Container(
+                  alignment: Alignment.bottomLeft,
+                  child: const SizedBox(
+                    height: 20,
+                    child: Text('Nivel de actividad'),
+                  ),
                 ),
                 //descanso / ligero / moderado / pesado / muy pesado
                 DropdownButtonFormField<String>(
-                  value: 'moderado',
+                  // value: 'moderado',
                   items: const [
                     DropdownMenuItem(value: 'descanso', child: Text('Descanso')),
                     DropdownMenuItem(value: 'ligero', child: Text('Ligero')),
@@ -120,11 +162,17 @@ class SignUpScreenState extends State<StatefulWidget> {
                     DropdownMenuItem(value: 'pesado', child: Text('Pesado')),
                     DropdownMenuItem(value: 'muy pesado', child: Text('Muy pesado')),
                   ],
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Este campo es requerido';
+                    }
+                    return null;
+                  },
                   onChanged: (value) {
                     datosForm['nivelActividad'] = value ?? 'moderado';
                   }
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(height: 20),
                 CustomInputField(
                   labelText: 'Patologia',
                   hintText: 'Patologia',
@@ -132,8 +180,10 @@ class SignUpScreenState extends State<StatefulWidget> {
                   formValues: datosForm,
                   numCaracteresMinimo: 0,
                   obligatorio: false,
+                  esParaPesoEdad: false,
+                  esParaHora: false,
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(height: 20),
                 CustomInputField(
                   labelText: 'Fármacos',
                   hintText: 'Fármacos',
@@ -141,8 +191,10 @@ class SignUpScreenState extends State<StatefulWidget> {
                   formValues: datosForm,
                   numCaracteresMinimo: 0,
                   obligatorio: false,
+                  esParaPesoEdad: false,
+                  esParaHora: false,
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(height: 20),
                 CustomInputField(
                   labelText: 'Hábitos',
                   hintText: 'Hábitos',
@@ -150,18 +202,32 @@ class SignUpScreenState extends State<StatefulWidget> {
                   formValues: datosForm,
                   numCaracteresMinimo: 0,
                   obligatorio: false,
+                  esParaPesoEdad: false,
+                  esParaHora: false,
                 ),
+
                 const SizedBox(height: 50),
-                CustomInputField(
-                  labelText: 'Hora de notiFicacion',
-                  hintText: 'Hora de notiFicacion',
-                  formProperty: 'hora',
-                  formValues: horaMap,
-                  numCaracteresMinimo: 1,
-                  obligatorio: true,
+                Container(
+                  padding: EdgeInsets.all(30),
+                  color: Colors.green,
+                  child: Column(
+                    children: [
+                      Text('Notificaciones'),
+                      CustomInputField(
+                        labelText: 'Hora de notiFicacion',
+                        hintText: 'Hora de notiFicacion',
+                        formProperty: 'hora',
+                        formValues: horaMap,
+                        keyboardType: TextInputType.number,
+                        numCaracteresMinimo: 1,
+                        obligatorio: true,
+                        esParaPesoEdad: false,
+                        esParaHora: true,
+                      ),
+                    ],
+                  ),
                 ),
-
-
+                const SizedBox(height: 10),
                 ElevatedButton(
                   child: const SizedBox(
                     width: double.infinity,
@@ -182,7 +248,11 @@ class SignUpScreenState extends State<StatefulWidget> {
                       peso: double.parse(datosForm['peso']!), 
                       nivelActividad: datosForm['nivelActividad']!);
 
+                    // int hora = int.parse(horaController.text);
                     int hora = int.parse(horaMap['hora']!);
+
+                    //lanzamos notificacion DIARIA
+                    lanzarNotificacionDiaria(hora);
 
                     Navigator.push(
                       context,
@@ -194,25 +264,16 @@ class SignUpScreenState extends State<StatefulWidget> {
                 const SizedBox(height: 30),
                 ElevatedButton(
                       onPressed: () {
-                        // Navegamos a otra pantalla
-                        // Poner una pantalla encima (ofrece volver a la pantalla anterior en el AppBar)
-                        // Navigator.pushNamed(context, 'notificaciones');
-
-                        // pushReplacement destruye el stack de pantallas anterior (no puedes volver)
-                        // Navigator.pushReplacementNamed(
-                        //     context, 'home');
                         Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => HomeScreen(userModel: UserModel(nombre: 'nombre', apellidos: 'apellidos', email: 'email', contrasena: 'contrasena', edad: 12, peso: 12, nivelActividad: 'nivelActividad'), hora: 0)
-                    ));
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => HomeScreen(userModel: UserModel(nombre: 'nombre', apellidos: 'apellidos', email: 'email', contrasena: 'contrasena', edad: 12, peso: 12, nivelActividad: 'pesado'), hora: 0)
+                        ));
                       },
                       child: const SizedBox(
                           width: double.infinity,
                           child:
                               Center(child: Text('Pantalla API AEMET'))))
-
-
               ],
             ),
           ),

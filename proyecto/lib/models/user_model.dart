@@ -72,4 +72,11 @@ class UserModel {
         '\nHabitos: $habitos';
     return toString;
   }
+
+  bool esVulnerable() {
+    if (edad > 65 || peso > 90 || patologia != '' || farmacos != '') {
+      return true;
+    }
+    return false;
+  }
 }
